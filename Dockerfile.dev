@@ -1,0 +1,40 @@
+# Development Dockerfile for Nx monorepo with TypeScript sync fix
+FROM node:24-alpine AS base
+
+# Set working directory first
+WORKDIR /app
+
+# Install pnpm and development tools
+RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN apk add --no-cache python3 make g++
+
+# Copy package files first for better layer caching
+COPY package.json pnpm-lock.yaml ./
+
+# Copy the entire project (only once!)
+COPY . .
+
+# Set environment variables
+ENV NX_DAEMON=false
+ENV NX_CACHE_DIRECTORY=/app/.nx
+
+# Install all dependencies
+RUN pnpm install --frozen-lockfile
+
+# Critical: Run nx sync and build everything to ensure TypeScript is properly set up
+# RUN pnpm nx sync
+# RUN pnpm nx run-many --target=build --all --skip-nx-cache
+
+# Backend development stage
+FROM base AS backend-dev
+EXPOSE 3000
+
+# Create a startup script that ensures TypeScript is always in sync
+CMD ["./scripts/start-backend.sh"]
+
+# Frontend development stage
+FROM base AS frontend-dev
+
+EXPOSE 3001
+
+CMD ["./scripts/start-blog-frontend.sh"]

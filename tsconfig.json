@@ -2,5 +2,24 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./apps/backend"
+    },
+    {
+      "path": "./libs/backend-clients"
+    },
+    {
+      "path": "./libs/blog-api-spec"
+    },
+    {
+      "path": "./libs/blog-schemas"
+    },
+    {
+      "path": "./apps/blog-frontend-e2e"
+    },
+    {
+      "path": "./apps/blog-frontend"
+    }
+  ]
 }

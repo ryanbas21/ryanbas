@@ -1,0 +1,80 @@
+# Dependencies
+node_modules
+*/node_modules
+# Logs
+*.log
+logs
+*.log.*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+.npm
+.yarn
+.pnpm
+
+# Cache
+.cache
+*/.cache
+.nx
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Documentation
+README.md
+*.md
+
+# Test files
+**/*.spec.ts
+**/*.test.ts
+**/*.spec.js
+**/*.test.js
+e2e/
+**/e2e/
+
+# Storybook
+.storybook
+storybook-static
+
+
+# test dir
+apps/blog-frontend-e2e

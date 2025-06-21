@@ -1,0 +1,101 @@
+{
+  "name": "@ryanbas/backend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf node_modules"
+  },
+  "dependencies": {
+    "@contentful/rich-text-types": "^17.0.1",
+    "@effect/opentelemetry": "^0.51.1",
+    "@effect/platform": "catalog:effect",
+    "@effect/platform-node": "catalog:effect",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.202.0",
+    "@opentelemetry/sdk-logs": "^0.202.0",
+    "@opentelemetry/sdk-metrics": "^2.0.1",
+    "@opentelemetry/sdk-trace-base": "^2.0.1",
+    "@opentelemetry/sdk-trace-node": "^2.0.1",
+    "@opentelemetry/sdk-trace-web": "^2.0.1",
+    "@ryanbas/blog-schemas": "workspace:*",
+    "@ryanbas/blog-api-spec": "workspace:*",
+    "contentful-management": "^11.53.0",
+    "effect": "catalog:effect"
+  },
+  "devDependencies": {
+    "@effect/language-service": "catalog:effect",
+    "dotenv": "^16.5.0"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "executor": "@nx/esbuild:esbuild",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "defaultConfiguration": "production",
+        "options": {
+          "platform": "node",
+          "outputPath": "apps/backend/dist",
+          "format": [
+            "cjs"
+          ],
+          "bundle": false,
+          "main": "apps/backend/src/main.ts",
+          "tsConfig": "apps/backend/tsconfig.app.json",
+          "assets": [
+            "apps/backend/src/assets"
+          ],
+          "esbuildOptions": {
+            "sourcemap": true,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        },
+        "configurations": {
+          "development": {},
+          "production": {
+            "esbuildOptions": {
+              "sourcemap": false,
+              "outExtension": {
+                ".js": ".js"
+              }
+            }
+          }
+        }
+      },
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@ryanbas/backend:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@ryanbas/backend:build:development"
+          },
+          "production": {
+            "buildTarget": "@ryanbas/backend:build:production"
+          }
+        }
+      },
+      "test": {
+        "options": {
+          "passWithNoTests": true
+        }
+      },
+      "docker-build": {
+        "dependsOn": [
+          "build"
+        ],
+        "command": "docker build -f apps/backend/Dockerfile . -t ryanbas-backend"
+      }
+    }
+  }
+}

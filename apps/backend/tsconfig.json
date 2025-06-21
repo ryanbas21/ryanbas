@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "compilerOptions": {},
+  "references": [
+    {
+      "path": "../../libs/blog-api-spec"
+    },
+    {
+      "path": "../../libs/blog-schemas"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
+    }
+  ]
+}
