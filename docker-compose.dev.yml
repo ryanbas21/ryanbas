@@ -1,119 +1,85 @@
+# docker-compose.dev.yml - Hybrid approach
 services:
-  # Init container to ensure TypeScript is built and synced
-  nx-init:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-      target: base
-    volumes:
-      - ./apps:/app/apps
-      - ./libs:/app/libs
-      - ./packages:/app/packages
-      - ./dist:/app/dist
-      - nx_cache:/app/.nx
-      - ./node_modules:/app/node_modules
-    environment:
-      - NX_DAEMON=false
-    command: >
-      sh -c "
-        echo '🔄 Running Nx sync...' &&
-        pnpm nx sync &&
-        echo '🔨 Building all projects...' &&
-        pnpm nx run-many --target=build --all &&
-        echo '✅ Init complete - TypeScript should be in sync'
-      "
-    networks:
-      - app-network
-
+  # Backend development server
   backend-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
       target: backend-dev
     ports:
-      - "3000:3000"
+      - "9443:9443"
     environment:
       - NX_DAEMON=false
       - NODE_ENV=development
       - HOST=0.0.0.0
-      - PORT=3000
-      # OpenTelemetry configuration
+      - PORT=9443
       - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-lgtm:4317
       - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
       - OTEL_SERVICE_NAME=backend
-      # contentful- 
       - CONTENTFUL_SPACE_ID=${CONTENTFUL_SPACE_ID}
       - CONTENTFUL_API_KEY=${CONTENTFUL_API_KEY}
       - CONTENTFUL_PREVIEW_KEY=${CONTENTFUL_PREVIEW_KEY}
       - CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN=${CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN}
       - CONTENTFUL_ENVIRONMENT=${CONTENTFUL_ENVIRONMENT}
     volumes:
-      # Mount source code for hot reloading
-      - ./apps/backend:/app/apps/backend
-      - ./libs:/app/libs
-      - ./packages:/app/packages
-      - ./dist:/app/dist
-      - nx_cache:/app/.nx
-      # - ./node_modules:/app/node_modules
+      # Mount the entire source directory for full workspace sync
+      - ./:/app
+      # But exclude node_modules - use the ones from the container
+      - /app/node_modules
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./.eslintrc.json:/app/.eslintrc.json
     depends_on:
-      nx-init:
-        condition: service_completed_successfully
-      otel-lgtm:
-        condition: service_started
-      redis:
-        condition: service_started
+      - otel-lgtm
+      - redis
     restart: unless-stopped
     networks:
       - app-network
 
+  # Frontend development server
   blog-frontend-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
       target: frontend-dev
     ports:
-      - "3001:3001"
+      - "8443:4200"  # Map container's 4200 to host's 8443
     environment:
       - NX_DAEMON=false
       - NODE_ENV=development
       - HOST=0.0.0.0
-      - PORT=3001
+      - PORT=4200  # Remix uses this port
     volumes:
-      # Mount source code for hot reloading
-      - ./apps/blog-frontend:/app/apps/blog-frontend
+      # Only mount source code, not node_modules
+      - ./apps:/app/apps
       - ./libs:/app/libs
       - ./packages:/app/packages
-      - ./dist:/app/dist
-      - nx_cache:/app/.nx
-      - ./node_modules:/app/node_modules
+      - ./nx.json:/app/nx.json
+      - ./package.json:/app/package.json
+      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml
+      - ./tsconfig.base.json:/app/tsconfig.base.json
     depends_on:
-      nx-init:
-        condition: service_completed_successfully
-      backend-dev:
-        condition: service_started
+      - backend-dev
     restart: unless-stopped
     networks:
       - app-network
 
-  # Nginx reverse proxy for development
+  # Nginx reverse proxy
   nginx-dev:
     image: nginx:alpine
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx-certs:/etc/nginx/certs:ro
     depends_on:
       - blog-frontend-dev
       - backend-dev
     restart: unless-stopped
     networks:
       - app-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
+  # Redis database
   redis:
     image: redis:7-alpine
     ports:
@@ -124,13 +90,13 @@ services:
     networks:
       - app-network
 
-  # OpenTelemetry stack (Grafana, Loki, Tempo, Prometheus)
+  # Observability stack
   otel-lgtm:
     image: docker.io/grafana/otel-lgtm:latest
     ports:
-      - "3002:3000"  # Grafana UI
-      - "4317:4317"  # OTLP gRPC receiver
-      - "4318:4318"  # OTLP HTTP receiver
+      - "3002:3000"
+      - "4317:4317"
+      - "4318:4318"
     environment:
       - OTEL_METRIC_EXPORT_INTERVAL=500
     restart: unless-stopped
@@ -139,8 +105,6 @@ services:
 
 volumes:
   redis_data:
-    driver: local
-  nx_cache:
     driver: local
 
 networks:

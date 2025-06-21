@@ -9,7 +9,7 @@
       "options": {}
     },
     "serve": {
-      "executor": "@nx/remix:dev",
+      "executor": "@nx/remix:serve",
       "options": {
         "buildTarget": "blog-frontend:build"
       }

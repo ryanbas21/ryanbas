@@ -1,6 +1,17 @@
+# NX cache and temporary files
+.nx
+.nx/cache
+**/.nx/cache
+**/tmp
+**/.tmp
+
 # Dependencies
 node_modules
-*/node_modules
+**/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # Logs
 *.log
 logs

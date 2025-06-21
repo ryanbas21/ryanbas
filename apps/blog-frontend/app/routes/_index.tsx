@@ -1,13 +1,10 @@
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { blogClient } from '@ryanbas/backend-clients';
 import { BlogPostCard } from '../components/blog-post-card';
-import { TagList } from '../components/tag-list';
 import { getPosts } from '../client/index.js';
 import { Effect } from 'effect';
 
 export async function loader() {
-  // Fetch blog posts from your backend client
   const posts = await Effect.runPromise(getPosts);
 
   return json({ posts });

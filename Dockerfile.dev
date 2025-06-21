@@ -1,40 +1,39 @@
-# Development Dockerfile for Nx monorepo with TypeScript sync fix
-FROM node:24-alpine AS base
+# Dockerfile.dev - Hybrid approach: install deps in container, mount source code
+FROM node:24-alpine as base
 
-# Set working directory first
-WORKDIR /app
+# Install pnpm and system dependencies
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
-# Install pnpm and development tools
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm i -g pnpm
 RUN apk add --no-cache python3 make g++
 
-# Copy package files first for better layer caching
-COPY package.json pnpm-lock.yaml ./
+WORKDIR /app
 
-# Copy the entire project (only once!)
-COPY . .
+# Copy package files for dependency installation
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/backend/package.json ./apps/backend/
+COPY apps/blog-frontend/package.json ./apps/blog-frontend/
+COPY libs/backend-clients/package.json ./libs/backend-clients/
+COPY libs/blog-api-spec/package.json ./libs/blog-api-spec/
+COPY libs/blog-schemas/package.json ./libs/blog-schemas/
 
-# Set environment variables
-ENV NX_DAEMON=false
+# Install dependencies in container (they'll have correct permissions)
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+
 ENV NX_CACHE_DIRECTORY=/app/.nx
 
-# Install all dependencies
-RUN pnpm install --frozen-lockfile
-
-# Critical: Run nx sync and build everything to ensure TypeScript is properly set up
-# RUN pnpm nx sync
-# RUN pnpm nx run-many --target=build --all --skip-nx-cache
+FROM base as build
+ENV NX_DAEMON=false
+# Don't build here - let NX build on demand when source is mounted
+RUN echo "Build stage ready - dependencies installed"
 
 # Backend development stage
 FROM base AS backend-dev
-EXPOSE 3000
-
-# Create a startup script that ensures TypeScript is always in sync
-CMD ["./scripts/start-backend.sh"]
+EXPOSE 9443
+CMD ["sh", "-c", "pnpm nx serve backend --host=0.0.0.0"]
 
 # Frontend development stage
 FROM base AS frontend-dev
-
-EXPOSE 3001
-
-CMD ["./scripts/start-blog-frontend.sh"]
+EXPOSE 8443
+CMD ["sh", "-c", "pnpm nx serve blog-frontend --host=0.0.0.0"]

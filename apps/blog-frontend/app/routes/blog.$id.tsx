@@ -3,6 +3,7 @@ import { getPostById } from '../client/index.js';
 import { useLoaderData } from '@remix-run/react';
 import { TagList } from '../components/tag-list';
 import { formatDate } from '../utils/date.js';
+import { Effect } from 'effect';
 
 export async function loader({ params }: LoaderFunctionArgs) {
   const postId = params.id;
@@ -11,7 +12,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     throw new Response('Post ID is required', { status: 400 });
   }
 
-  const post = await getPostById(postId);
+  const post = await Effect.runPromise(getPostById(postId));
 
   if (!post) {
     throw new Response('Post not found', { status: 404 });

@@ -63,6 +63,9 @@ importers:
         specifier: ^3.3.0
         version: 3.3.0
     devDependencies:
+      '@effect/language-service':
+        specifier: catalog:effect
+        version: 0.21.2
       '@eslint/js':
         specifier: ^9.8.0
         version: 9.29.0
@@ -253,9 +256,6 @@ importers:
         specifier: catalog:effect
         version: 3.16.7
     devDependencies:
-      '@effect/language-service':
-        specifier: catalog:effect
-        version: 0.21.2
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0

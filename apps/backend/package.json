@@ -2,8 +2,9 @@
   "name": "@ryanbas/backend",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules dist out-tsc"
   },
   "dependencies": {
     "@contentful/rich-text-types": "^17.0.1",
@@ -23,10 +24,10 @@
     "effect": "catalog:effect"
   },
   "devDependencies": {
-    "@effect/language-service": "catalog:effect",
     "dotenv": "^16.5.0"
   },
   "nx": {
+    "name": "backend",
     "targets": {
       "build": {
         "executor": "@nx/esbuild:esbuild",
@@ -38,7 +39,7 @@
           "platform": "node",
           "outputPath": "apps/backend/dist",
           "format": [
-            "cjs"
+            "esm"
           ],
           "bundle": false,
           "main": "apps/backend/src/main.ts",
@@ -73,15 +74,15 @@
           "build"
         ],
         "options": {
-          "buildTarget": "@ryanbas/backend:build",
+          "buildTarget": "backend:build:development",
           "runBuildTargetDependencies": false
         },
         "configurations": {
           "development": {
-            "buildTarget": "@ryanbas/backend:build:development"
+            "buildTarget": "backend:build:development"
           },
           "production": {
-            "buildTarget": "@ryanbas/backend:build:production"
+            "buildTarget": "backend:build:production"
           }
         }
       },
