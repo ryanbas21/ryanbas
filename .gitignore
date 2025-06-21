@@ -3,6 +3,8 @@
 # secrets
 ./nginx-certs/*
 
+.nx
+
 # envs
 *.env*
 
