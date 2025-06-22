@@ -52,6 +52,9 @@
   ],
   "references": [
     {
+      "path": "../../libs/blog-schemas/tsconfig.lib.json"
+    },
+    {
       "path": "../../libs/backend-clients/tsconfig.lib.json"
     }
   ]

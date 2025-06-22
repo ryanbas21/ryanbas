@@ -1,22 +1,24 @@
 import {
-  // makeBackendClient,
+  makeBackendClient,
   makeFrontendClient,
 } from '@ryanbas/backend-clients';
 import { FetchHttpClient } from '@effect/platform';
-import { Console, Effect } from 'effect';
+import { Effect } from 'effect';
 
-export const client = makeFrontendClient();
+const handleClient = Effect.if(typeof window !== 'undefined', {
+  onTrue: () => makeFrontendClient(),
+  onFalse: () => makeBackendClient(),
+});
 
 export const getPostById = (postId: string) =>
-  client
+  handleClient
     .pipe(
-      Effect.tap(Console.log('Making Request on backend')),
       Effect.flatMap((service) =>
         service.Blog['/blogid']({ path: { id: postId } })
       )
     )
     .pipe(Effect.provide(FetchHttpClient.layer));
 
-export const getPosts = client
+export const getPosts = handleClient
   .pipe(Effect.flatMap((service) => service.Blog['/']()))
   .pipe(Effect.provide(FetchHttpClient.layer));

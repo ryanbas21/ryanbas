@@ -24,7 +24,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 ENV NX_CACHE_DIRECTORY=/app/.nx
 
 FROM base as build
-ENV NX_DAEMON=false
+
+RUN pnpm nx sync
 # Don't build here - let NX build on demand when source is mounted
 RUN echo "Build stage ready - dependencies installed"
 

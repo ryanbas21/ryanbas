@@ -1,28 +1,15 @@
-import { json, type LoaderFunctionArgs } from '@remix-run/node';
+import { type LoaderFunctionArgs } from '@remix-run/node';
 import { getPostById } from '../client/index.js';
 import { useLoaderData } from '@remix-run/react';
 import { TagList } from '../components/tag-list';
 import { formatDate } from '../utils/date.js';
 import { Effect } from 'effect';
 
-export async function loader({ params }: LoaderFunctionArgs) {
-  const postId = params.id;
-
-  if (!postId) {
-    throw new Response('Post ID is required', { status: 400 });
-  }
-
-  const post = await Effect.runPromise(getPostById(postId));
-
-  if (!post) {
-    throw new Response('Post not found', { status: 404 });
-  }
-
-  return json({ post });
-}
+export const loader = ({ params }: LoaderFunctionArgs) =>
+  Effect.runPromise(getPostById(params?.id ?? '0'));
 
 export default function BlogPost() {
-  const { post } = useLoaderData<typeof loader>();
+  const post = useLoaderData<typeof loader>();
 
   return (
     <article className="prose dark:prose-invert max-w-none">

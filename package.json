@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "docker-dev": "docker compose -f docker-compose.dev.yml up --build",
+    "docker-dev": "docker compose -f docker-compose.yml up --build",
     "docker-infra": "docker compose -f docker-compose.infra.yml up --build",
     "clean": "rm -rf node_modules; pnpm -r clean",
     "postinstall": "ts-patch install"

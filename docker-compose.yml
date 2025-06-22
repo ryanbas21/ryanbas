@@ -1,4 +1,4 @@
-# docker-compose.dev.yml - Hybrid approach
+# docker-compose.dev.yml - Back to working configuration
 services:
   # Backend development server
   backend-dev:
@@ -26,8 +26,6 @@ services:
       - ./:/app
       # But exclude node_modules - use the ones from the container
       - /app/node_modules
-      - ./tsconfig.json:/app/tsconfig.json
-      - ./.eslintrc.json:/app/.eslintrc.json
     depends_on:
       - otel-lgtm
       - redis
@@ -42,21 +40,21 @@ services:
       dockerfile: Dockerfile.dev
       target: frontend-dev
     ports:
-      - "8443:4200"  # Map container's 4200 to host's 8443
+      - "4200:4200"
     environment:
-      - NX_DAEMON=false
+      - NX_DAEMON=true
+      - NX_DAEMON_SOCKET_DIR=/shared/nx-daemon
       - NODE_ENV=development
+      - BACKEND_API_URL=https://localhost/api
       - HOST=0.0.0.0
       - PORT=4200  # Remix uses this port
     volumes:
-      # Only mount source code, not node_modules
-      - ./apps:/app/apps
-      - ./libs:/app/libs
-      - ./packages:/app/packages
-      - ./nx.json:/app/nx.json
-      - ./package.json:/app/package.json
-      - ./pnpm-workspace.yaml:/app/pnpm-workspace.yaml
-      - ./tsconfig.base.json:/app/tsconfig.base.json
+      # Mount entire workspace for frontend too (need workspace files)
+      - ./:/app
+      # But exclude node_modules - use the ones from the container
+      - /app/node_modules
+      # Shared daemon socket
+      - nx_daemon_socket:/shared/nx-daemon
     depends_on:
       - backend-dev
     restart: unless-stopped
@@ -105,6 +103,8 @@ services:
 
 volumes:
   redis_data:
+    driver: local
+  nx_daemon_socket:
     driver: local
 
 networks:

@@ -1,17 +1,13 @@
-import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { BlogPostCard } from '../components/blog-post-card';
 import { getPosts } from '../client/index.js';
 import { Effect } from 'effect';
+import { ContentfulItemsOnly } from '@ryanbas/blog-schemas';
 
-export async function loader() {
-  const posts = await Effect.runPromise(getPosts);
-
-  return json({ posts });
-}
+export const loader = () => Effect.runPromise(getPosts);
 
 export default function Index() {
-  const { posts } = useLoaderData<typeof loader>();
+  const posts = useLoaderData<ContentfulItemsOnly>();
 
   return (
     <div>

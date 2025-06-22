@@ -277,6 +277,9 @@ importers:
       '@ryanbas/backend-clients':
         specifier: workspace:*
         version: link:../../libs/backend-clients
+      '@ryanbas/blog-schemas':
+        specifier: workspace:*
+        version: link:../../libs/blog-schemas
       effect:
         specifier: catalog:effect
         version: 3.16.7
