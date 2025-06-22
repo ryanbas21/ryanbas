@@ -39,8 +39,6 @@ services:
 volumes:
   redis_data:
     driver: local
-  nx_cache:
-    driver: local
 
 # networks:
   # app-network:

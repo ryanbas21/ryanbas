@@ -1,0 +1,20 @@
+$schema: './cache/schemas/workspace.json'
+
+unstable_remote:
+  host: 'grpcs://cache.depot.dev'
+  auth:
+    token: 'DEPOT_TOKEN'
+    headers:
+      'X-Depot-Org': 'zw1pxhf3s0'
+runner:
+  cacheLifetime: '7 days'
+
+projects:
+  backend: 'apps/backend'
+  blog: 'apps/blog-frontend'
+  backend-clients: 'libs/backend-clients' 
+  blog-api-spec: 'libs/blog-api-spec'
+  blog-schemas: 'libs/blog-schemas'
+vcs:
+  defaultBranch: main
+  manager: git

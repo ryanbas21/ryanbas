@@ -1,9 +1,5 @@
-# NX cache and temporary files
-.nx
-.nx/cache
-**/.nx/cache
-**/tmp
-**/.tmp
+# moon
+.moon/cache
 
 # Dependencies
 node_modules

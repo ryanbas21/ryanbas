@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { HttpApiBuilder, HttpApiSwagger, HttpServer } from '@effect/platform';
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node';
 import { Layer } from 'effect';

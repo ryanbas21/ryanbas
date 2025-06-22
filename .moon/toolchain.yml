@@ -1,0 +1,17 @@
+node:
+  version: '24.2.0'
+  packageManager: 'pnpm'
+  pnpm: {
+    version: "10.12.1"
+  }
+  addEnginesConstraint: true
+  dedupeOnLockfileChange: true
+  # dependencyVersionFormat: 'workspace'
+  inferTasksFromScripts: true
+  # rootPackageOnly: true
+  syncProjectWorkspaceDependencies: true
+  # syncVersionManagerConfig: 'nvm'
+typescript:
+  syncProjectReferences: true
+  root: './dist'
+  rootOptionsConfigFileName: 'tsconfig.base.json'

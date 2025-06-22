@@ -4,12 +4,11 @@ services:
   backend-dev:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-      target: backend-dev
+      dockerfile: apps/backend/Dockerfile
+      target: start
     ports:
       - "9443:9443"
     environment:
-      - NX_DAEMON=false
       - NODE_ENV=development
       - HOST=0.0.0.0
       - PORT=9443
@@ -24,6 +23,7 @@ services:
     volumes:
       # Mount the entire source directory for full workspace sync
       - ./:/app
+      - /root/.moon
       # But exclude node_modules - use the ones from the container
       - /app/node_modules
     depends_on:
@@ -37,14 +37,11 @@ services:
   blog-frontend-dev:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-      target: frontend-dev
+      dockerfile: apps/blog-frontend/Dockerfile
+      target: serve
     ports:
       - "4200:4200"
     environment:
-      - NX_DAEMON=true
-      - NX_DAEMON_SOCKET_DIR=/shared/nx-daemon
-      - NODE_ENV=development
       - BACKEND_API_URL=https://localhost/api
       - HOST=0.0.0.0
       - PORT=4200  # Remix uses this port
@@ -53,8 +50,6 @@ services:
       - ./:/app
       # But exclude node_modules - use the ones from the container
       - /app/node_modules
-      # Shared daemon socket
-      - nx_daemon_socket:/shared/nx-daemon
     depends_on:
       - backend-dev
     restart: unless-stopped
@@ -103,8 +98,6 @@ services:
 
 volumes:
   redis_data:
-    driver: local
-  nx_daemon_socket:
     driver: local
 
 networks:

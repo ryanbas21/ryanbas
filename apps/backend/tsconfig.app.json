@@ -2,8 +2,8 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
+    "emitDeclarationOnly": false,
     "types": ["node"],
-    "rootDir": "src",
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
@@ -14,11 +14,10 @@
       }
     ]
   },
-  "include": ["src/**/*.ts", "src/getContentfulEnvironment.js"],
+  "include": ["src/**/*.ts", "./vitest.config.ts"],
   "exclude": [
     "out-tsc",
     "dist",
-    "jest.config.ts",
     "src/**/*.spec.ts",
     "src/**/*.test.ts",
     "eslint.config.js",

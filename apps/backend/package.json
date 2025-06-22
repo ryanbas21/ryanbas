@@ -3,9 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "scripts": {
-    "clean": "rm -rf node_modules dist out-tsc"
-  },
   "dependencies": {
     "@contentful/rich-text-types": "^17.0.1",
     "@effect/opentelemetry": "^0.51.1",
@@ -21,82 +18,16 @@
     "@ryanbas/blog-schemas": "workspace:*",
     "@ryanbas/blog-api-spec": "workspace:*",
     "contentful-management": "^11.53.0",
-    "effect": "catalog:effect"
-  },
-  "devDependencies": {
+    "effect": "catalog:effect",
     "dotenv": "^16.5.0"
   },
-  "nx": {
-    "name": "backend",
-    "targets": {
-      "build": {
-        "executor": "@nx/esbuild:esbuild",
-        "outputs": [
-          "{options.outputPath}"
-        ],
-        "defaultConfiguration": "production",
-        "options": {
-          "platform": "node",
-          "outputPath": "apps/backend/dist",
-          "format": [
-            "esm"
-          ],
-          "bundle": false,
-          "main": "apps/backend/src/main.ts",
-          "tsConfig": "apps/backend/tsconfig.app.json",
-          "assets": [
-            "apps/backend/src/assets"
-          ],
-          "esbuildOptions": {
-            "sourcemap": true,
-            "outExtension": {
-              ".js": ".js"
-            }
-          }
-        },
-        "configurations": {
-          "development": {},
-          "production": {
-            "esbuildOptions": {
-              "sourcemap": false,
-              "outExtension": {
-                ".js": ".js"
-              }
-            }
-          }
-        }
-      },
-      "serve": {
-        "continuous": true,
-        "executor": "@nx/js:node",
-        "defaultConfiguration": "development",
-        "dependsOn": [
-          "build"
-        ],
-        "options": {
-          "buildTarget": "backend:build:development",
-          "runBuildTargetDependencies": false
-        },
-        "configurations": {
-          "development": {
-            "buildTarget": "backend:build:development"
-          },
-          "production": {
-            "buildTarget": "backend:build:production"
-          }
-        }
-      },
-      "test": {
-        "options": {
-          "passWithNoTests": true
-        }
-      },
-      "docker-build": {
-        "dependsOn": [
-          "build"
-        ],
-        "command": "docker build -f apps/backend/Dockerfile . -t ryanbas-backend"
-      }
-    }
+  "devDependencies": {
+    "@eslint/js": "catalog:eslint",
+    "@effect/language-service": "catalog:effect",
+    "eslint": "catalog:eslint",
+    "eslint-config-prettier": "catalog:eslint",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vitest": "catalog:vite"
   }
 }

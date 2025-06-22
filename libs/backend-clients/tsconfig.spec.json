@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "skipLibCheck": true,
     "outDir": "./out-tsc/vitest",
     "types": [
       "vitest/globals",
@@ -9,6 +10,7 @@
       "node",
       "vitest"
     ],
+    "noEmit": true,
     "forceConsistentCasingInFileNames": true
   },
   "include": [

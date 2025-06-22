@@ -1,0 +1,14 @@
+tasks:
+  build:
+    command: 'tsc -b'
+    deps: 
+      - "~:build"
+    outputs: 
+      - dist
+  clean:
+    command:
+    - rm
+    - '-rf'
+    - node_modules
+    - dist
+    toolchain: system
