@@ -16,12 +16,17 @@
     }
   },
   "scripts": {
-    "clean": "rm -rf node_modules"
+    "clean": "rm -rf node_modules dist"
   },
   "dependencies": {
     "@effect/platform": "catalog:effect",
     "@ryanbas/blog-schemas": "workspace:*",
     "effect": "catalog:effect",
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:eslint",
+    "eslint": "catalog:eslint",
+    "eslint-config-prettier": "catalog:eslint"
   }
 }

@@ -15,11 +15,13 @@
       "default": "./dist/index.js"
     }
   },
-  "scripts": {
-    "clean": "rm -rf node_modules"
-  },
   "dependencies": {
     "effect": "catalog:effect",
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "catalog:eslint",
+    "eslint": "catalog:eslint",
+    "eslint-config-prettier": "catalog:eslint"
   }
 }

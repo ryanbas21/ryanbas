@@ -6,13 +6,9 @@ export default defineConfig(() => ({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/blog-frontend',
   plugins: [react()],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
   test: {
-    setupFiles: ['test-setup.ts'],
     watch: false,
+    passWithNoTests: true,
     globals: true,
     environment: 'jsdom',
     include: ['./tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],

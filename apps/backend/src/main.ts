@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { HttpApiBuilder, HttpApiSwagger, HttpServer } from '@effect/platform';
 import { NodeHttpServer, NodeRuntime } from '@effect/platform-node';
 import { Layer } from 'effect';
@@ -33,7 +34,7 @@ const ServerLive = HttpApiBuilder.serve().pipe(
   Layer.provide(NodeSDKTracerLive),
   Layer.provide(NodeHttpClient.layer),
   HttpServer.withLogAddress,
-  Layer.provide(NodeHttpServer.layer(createServer, { port: 8443 }))
+  Layer.provide(NodeHttpServer.layer(createServer, { port: 9443 }))
 );
 
 // Launch the server

@@ -1,0 +1,5 @@
+tasks:
+  build:
+    command: 'tsc -b'
+    deps: 
+      - "~:build"

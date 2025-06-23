@@ -1,6 +1,13 @@
+# moon
+.moon/cache
+
 # Dependencies
 node_modules
-*/node_modules
+**/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # Logs
 *.log
 logs
@@ -78,3 +85,5 @@ storybook-static
 
 # test dir
 apps/blog-frontend-e2e
+.nx/
+.nx-daemon/

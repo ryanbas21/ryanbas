@@ -1,0 +1,31 @@
+id: backend
+language: typescript
+tasks:
+  build:
+    command: 'tsc -b'
+    deps:
+      - "~:build"
+  docker-build:
+    command: docker build -f apps/backend/Dockerfile . -t ryanbas-backend
+    deps:
+    - ~:build
+    options:
+      runInCI: false
+
+  serve:
+    command: node dist/main.js
+    options:
+      runInCI: false
+
+  serve.development:
+    extends: serve
+    options:
+      runInCI: false
+
+  serve.production:
+    extends: serve
+    options:
+      runInCI: false
+
+toolchain:
+  default: node

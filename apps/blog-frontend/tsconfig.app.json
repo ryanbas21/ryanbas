@@ -5,6 +5,7 @@
     "lib": ["DOM", "DOM.Iterable", "ES2019"],
     "types": ["@remix-run/node", "vite/client"],
     "esModuleInterop": true,
+    "emitDeclarationOnly": false,
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -48,9 +49,12 @@
     "src/**/*.spec.jsx",
     "eslint.config.js",
     "eslint.config.cjs",
-    "eslint.config.mjs"
+    ".eslintrc.js"
   ],
   "references": [
+    {
+      "path": "../../libs/blog-schemas/tsconfig.lib.json"
+    },
     {
       "path": "../../libs/backend-clients/tsconfig.lib.json"
     }

@@ -1,0 +1,55 @@
+id: blog-frontend
+language: typescript
+tasks:
+  build:
+    command: 'remix vite:build'
+    deps: 
+      - '~:build'
+    inputs:
+      - 'app/**/*'
+      - 'public/**/*'
+      - 'package.json'
+      - 'vite.config.ts'
+      - 'remix.config.js'
+      - 'tsconfig.json'
+    outputs:
+      - 'dist'
+  clean:
+    command:
+    - rm
+    - '-rf'
+    - node_modules
+    - build
+    - dist
+    - public/build
+    toolchain: system
+    options:
+      runInCI: false
+
+  docker-build:
+    command: docker build -f apps/blog-frontend/Dockerfile . -t ryanbas-blog-frontend
+    deps:
+    - ~:build
+    options:
+      runInCI: false
+
+  serve:
+    command: remix vite:dev
+    deps:
+      - '~:build'
+    options:
+      runInCI: false
+
+
+  start:
+    command: 'remix-serve ./build/server/index.js'
+    deps:
+      - '~:build'
+    local: true
+    options:
+      runInCI: false
+
+
+toolchain:
+  default: node
+type: application

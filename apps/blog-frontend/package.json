@@ -2,24 +2,25 @@
   "name": "@ryanbas/blog-frontend",
   "private": true,
   "type": "module",
-  "scripts": {
-    "clean": "rm -rf node_modules"
+  "devDependencies": {
+    "@eslint/js": "catalog:eslint",
+    "@remix-run/dev": "^2.15.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "eslint": "catalog:eslint",
+    "eslint-config-prettier": "catalog:eslint"
   },
   "sideEffects": false,
   "dependencies": {
     "@effect/platform": "catalog:effect",
-    "@remix-run/node": "^2.15.0",
-    "@remix-run/react": "^2.15.0",
-    "@remix-run/serve": "^2.15.0",
+    "@remix-run/node": "catalog:remix",
+    "@remix-run/react": "catalog:remix",
+    "@remix-run/serve": "catalog:remix",
     "@ryanbas/backend-clients": "workspace:*",
+    "@ryanbas/blog-schemas": "workspace:*",
     "effect": "catalog:effect",
     "isbot": "^4.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
-  },
-  "devDependencies": {
-    "@remix-run/dev": "^2.15.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0"
   }
 }

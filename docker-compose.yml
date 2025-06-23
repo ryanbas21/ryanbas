@@ -1,0 +1,105 @@
+# docker-compose.dev.yml - Back to working configuration
+services:
+  # Backend development server
+  backend-dev:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+      target: start
+    ports:
+      - "9443:9443"
+    environment:
+      - NODE_ENV=development
+      - HOST=0.0.0.0
+      - PORT=9443
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-lgtm:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_SERVICE_NAME=backend
+      - CONTENTFUL_SPACE_ID=${CONTENTFUL_SPACE_ID}
+      - CONTENTFUL_API_KEY=${CONTENTFUL_API_KEY}
+      - CONTENTFUL_PREVIEW_KEY=${CONTENTFUL_PREVIEW_KEY}
+      - CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN=${CONTENTFUL_MANAGEMENT_API_ACCESS_TOKEN}
+      - CONTENTFUL_ENVIRONMENT=${CONTENTFUL_ENVIRONMENT}
+    volumes:
+      # Mount the entire source directory for full workspace sync
+      - ./:/app
+      - /root/.moon
+      # But exclude node_modules - use the ones from the container
+      - /app/node_modules
+    depends_on:
+      - otel-lgtm
+      - redis
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Frontend development server
+  blog-frontend-dev:
+    build:
+      context: .
+      dockerfile: apps/blog-frontend/Dockerfile
+      target: serve
+    ports:
+      - "4200:4200"
+    environment:
+      - BACKEND_API_URL=https://localhost/api
+      - HOST=0.0.0.0
+      - PORT=4200  # Remix uses this port
+    volumes:
+      # Mount entire workspace for frontend too (need workspace files)
+      - ./:/app
+      # But exclude node_modules - use the ones from the container
+      - /app/node_modules
+    depends_on:
+      - backend-dev
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Nginx reverse proxy
+  nginx-dev:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx-certs:/etc/nginx/certs:ro
+    depends_on:
+      - blog-frontend-dev
+      - backend-dev
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Redis database
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  # Observability stack
+  otel-lgtm:
+    image: docker.io/grafana/otel-lgtm:latest
+    ports:
+      - "3002:3000"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      - OTEL_METRIC_EXPORT_INTERVAL=500
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

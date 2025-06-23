@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-empty-interface */
+ 
 import { Schema } from 'effect';
 
 const sysLinkSchema = Schema.Struct({

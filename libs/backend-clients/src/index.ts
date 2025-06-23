@@ -1,1 +1,1 @@
-export * from './lib/backend-clients.js';
+export * from './lib/clients.js';

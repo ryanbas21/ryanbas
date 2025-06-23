@@ -4,6 +4,9 @@
   "files": [],
   "references": [
     {
+      "path": "../../libs/blog-schemas"
+    },
+    {
       "path": "../../libs/backend-clients"
     },
     {
